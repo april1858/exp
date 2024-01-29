@@ -10,13 +10,14 @@ var InvalidInput = errors.New("invalid input")
 
 func Unpack(strIn string) (string, error) {
 	strOut := ""
-	var buff, s string
-	slash := false
+	var buff string
+	//slash := false
 	for _, c := range strIn {
 		if c == 10 {
-			slash = true
+			c = 92
 		}
-		if c <= 53 && c != 10 {
+		fmt.Println("cc - ", c)
+		if c <= 57 {
 			if buff == "" {
 				return "", InvalidInput
 			} else {
@@ -24,20 +25,24 @@ func Unpack(strIn string) (string, error) {
 				buff = ""
 			}
 		}
-		if c > 53 {
+		if c > 57 {
 
 			if buff == "" {
-				if slash == true {
-					s = string(rune(10)) + string(c)
-					buff = s
-					fmt.Println("s ", s)
+				if c == 92 {
+					buff = string(c) + "n"
 				} else {
 					buff = string(c)
 				}
 
 			} else {
-				strOut += buff
-				buff = string(c)
+				if c == 92 {
+					strOut += buff
+					buff = string(c) + "n"
+				} else {
+					strOut += buff
+					buff = string(c)
+				}
+
 			}
 		}
 	}
@@ -48,7 +53,7 @@ func Unpack(strIn string) (string, error) {
 }
 
 func main() {
-	s, err := Unpack("d\n5abc")
+	s, err := Unpack("a\n2b3c")
 	if err != nil {
 		fmt.Println(err)
 	}
