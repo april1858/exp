@@ -1,39 +1,56 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
-func main() {
-	var b strings.Builder
-	s := "d\n5abc"
-	for i := 0; i < len(s); i++ {
-		if s[i] == 10 {
-			b.WriteString(string(s[i]))
-			fmt.Println("sd ", b.String())
-		}
-		if s[i] <= 57 && s[i] != 10 {
-			if i == 0 {
-				fmt.Println("error")
-				break
-			}
-			if i < len(s)-1 && s[i+1] <= 57 {
-				fmt.Println("error2")
-				break
-			}
-		}
-		if i < len(s)-2 && s[i+1] <= 57 && s[i+2] > 57 {
-			repeat, _ := strconv.Atoi(string(s[i+1]))
-			b.WriteString(strings.Repeat(string(s[i]), repeat))
-			i++
-			continue
-		}
+var InvalidInput = errors.New("invalid input")
 
-		fmt.Println(s[i], i)
-		b.WriteString(string(s[i]))
+func Unpack(strIn string) (string, error) {
+	strOut := ""
+	var buff, s string
+	slash := false
+	for _, c := range strIn {
+		if c == 10 {
+			slash = true
+		}
+		if c <= 53 && c != 10 {
+			if buff == "" {
+				return "", InvalidInput
+			} else {
+				strOut += strings.Repeat(buff, int(c-'0'))
+				buff = ""
+			}
+		}
+		if c > 53 {
+
+			if buff == "" {
+				if slash == true {
+					s = string(rune(10)) + string(c)
+					buff = s
+					fmt.Println("s ", s)
+				} else {
+					buff = string(c)
+				}
+
+			} else {
+				strOut += buff
+				buff = string(c)
+			}
+		}
 	}
+	if buff != "" {
+		strOut += string(buff)
+	}
+	return strOut, nil
+}
 
-	fmt.Println(b.String())
+func main() {
+	s, err := Unpack("d\n5abc")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(s)
 }
