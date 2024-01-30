@@ -11,7 +11,7 @@ var InvalidInput = errors.New("invalid input")
 func Unpack(strIn string) (string, error) {
 	strOut := ""
 	var buff string
-	//slash := false
+	fmt.Printf("%s ", string(rune(10)))
 	for _, c := range strIn {
 		if c == 10 {
 			c = 92
@@ -53,7 +53,7 @@ func Unpack(strIn string) (string, error) {
 }
 
 func main() {
-	s, err := Unpack("a\n2b3c")
+	s, err := Unpack("a\n2b3nc")
 	if err != nil {
 		fmt.Println(err)
 	}
